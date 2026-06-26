@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +6,8 @@ public class PlayerController : MonoBehaviour
     public float currentHP = 100f;
     public float maxHP = 100f;
     public Slider hpBar;
+
+    public GameObject loseUI;
 
     public float[] laneXPositions = new float[] { -2f, 0f, 2f };
     private int currentLane = 1;
@@ -38,6 +38,11 @@ public class PlayerController : MonoBehaviour
             hpBar.minValue = 0f;
             hpBar.maxValue = maxHP;
             hpBar.value = currentHP;
+        }
+
+        if (loseUI != null)
+        {
+            loseUI.SetActive(false);
         }
     }
 
@@ -92,14 +97,14 @@ public class PlayerController : MonoBehaviour
         float zDepth = Mathf.Max(0.1f, CameraComponent.focalLength + playerPosition.z); 
         float perspective = CameraComponent.focalLength / zDepth; 
 
-        float calculatedX = playerPosition.x * perspective;
+        float posX = playerPosition.x * perspective;
 
         float ground = Mathf.Lerp(groundY, 6f, 1f - perspective); 
         
         float jumpHeightOffset = playerPosition.y - groundY;
-        float calculatedY = ground + jumpHeightOffset;
+        float posY = ground + jumpHeightOffset;
 
-        transform.position = new Vector2(calculatedX, calculatedY);
+        transform.position = new Vector2(posX, posY);
 
         transform.localScale = Vector3.one * perspective * 1.2f;
     }
@@ -125,8 +130,8 @@ public class PlayerController : MonoBehaviour
         {
             hitTimer -= Time.deltaTime;
             
-            float colorchange = hitTimer / hitDuration;
-            spriteRenderer.color = Color.Lerp(Color.white, Color.red, colorchange);
+            float colorChange = hitTimer / hitDuration;
+            spriteRenderer.color = Color.Lerp(Color.white, Color.red, colorChange);
         }
         else
         {
@@ -155,6 +160,13 @@ public class PlayerController : MonoBehaviour
         if (currentHP <= 0)
         {
             Debug.Log("Game Over!");
+            
+            if (loseUI != null)
+            {
+                loseUI.SetActive(true);
+            }
+
+            Time.timeScale = 0f; 
         }
     }
 

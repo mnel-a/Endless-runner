@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,8 +9,6 @@ public class ObstacleSpawner : MonoBehaviour
     
     public float gameSpeed = 200f;
     public float spawnInterval = 2f;
-
-    public float collisionZRange = 1.5f; 
     
     private List<Obstacle> obstacles = new List<Obstacle>();
     private float[] lanePositionsX = new float[] { -2f, 0f, 2f };
@@ -43,7 +40,7 @@ public class ObstacleSpawner : MonoBehaviour
 
             var spawnedItem = Instantiate(chosenPrefab, parent);
 
-            float spawnY = -4f; 
+            float spawnY = -5f; 
             float targetLaneX = lanePositionsX[designatedLane];
 
             spawnedItem.InitializeObstacle(designatedLane, spawnY, 700f);
@@ -62,17 +59,26 @@ public class ObstacleSpawner : MonoBehaviour
 
             obstacle.itemPosition.z -= gameSpeed * Time.deltaTime;
 
-            if (obstacle.itemPosition.z <= collisionZRange && obstacle.itemPosition.z >= -collisionZRange)
-            {
-                if (obstacle.laneIndex == player.GetCurrentLane() && !player.IsJumping())
-                {
-                    player.TakeDamage(5f);
-                    Destroy(obstacle.gameObject);
-                    obstacles.RemoveAt(i);
-                    continue;
-                }
-            }
+            Vector2 playerScreenPos = player.transform.position;
+            Vector2 obstacleScreenPos = obstacle.transform.position;
 
+        
+            float deltaX = playerScreenPos.x - obstacleScreenPos.x;
+            float deltaY = playerScreenPos.y - obstacleScreenPos.y;
+            
+            float distanceSquared = (deltaX * deltaX) + (deltaY * deltaY);
+
+            float hitRadius = .5f; 
+            float hitRadiusSquared = hitRadius * hitRadius;
+
+            if (distanceSquared <= hitRadiusSquared && !player.IsJumping())
+            {
+                player.TakeDamage(5f);
+                Destroy(obstacle.gameObject);
+                obstacles.RemoveAt(i);
+                continue;
+            }
+   
             if (obstacle.itemPosition.z < -20f)
             {
                 Destroy(obstacle.gameObject);

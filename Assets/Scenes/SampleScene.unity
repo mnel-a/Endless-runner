@@ -786,7 +786,7 @@ MonoBehaviour:
   parent: {fileID: 2118000697}
   gameSpeed: 400
   spawnInterval: 0.6
-  collisionZRange: 15
+  collisionZRange: 10
 --- !u!4 &184786723
 Transform:
   m_ObjectHideFlags: 0
@@ -6637,7 +6637,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5230391022226307650, guid: 70b32fbd929d2d54a8fa39e86b94802a, type: 3}
       propertyPath: jumpForce
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5230391022226307650, guid: 70b32fbd929d2d54a8fa39e86b94802a, type: 3}
       propertyPath: laneSwitchSpeed
