@@ -38,16 +38,16 @@ public class ObstacleSpawner : MonoBehaviour
             int randomObstacleIndex = Random.Range(0, obstacleToSpawn.Length);
             Obstacle chosenPrefab = obstacleToSpawn[randomObstacleIndex];
 
-            var spawnedItem = Instantiate(chosenPrefab, parent);
+            var spawnedObstacle = Instantiate(chosenPrefab, parent);
 
             float spawnY = -5f; 
             float targetLaneX = lanePositionsX[designatedLane];
 
-            spawnedItem.InitializeObstacle(designatedLane, spawnY, 700f);
+            spawnedObstacle.InitializeObstacle(designatedLane, spawnY, 700f);
 
-            spawnedItem.itemPosition.x = targetLaneX;
+            spawnedObstacle.obstaclePosition.x = targetLaneX;
 
-            obstacles.Add(spawnedItem);
+            obstacles.Add(spawnedObstacle);
         }
     }
     private void Update()
@@ -57,14 +57,14 @@ public class ObstacleSpawner : MonoBehaviour
             Obstacle obstacle = obstacles[i];
             if (obstacle == null) continue;
 
-            obstacle.itemPosition.z -= gameSpeed * Time.deltaTime;
+            obstacle.obstaclePosition.z -= gameSpeed * Time.deltaTime;
 
-            Vector2 playerScreenPos = player.transform.position;
-            Vector2 obstacleScreenPos = obstacle.transform.position;
+            Vector2 playerPos = player.transform.position;
+            Vector2 obstaclePos = obstacle.transform.position;
 
         
-            float deltaX = playerScreenPos.x - obstacleScreenPos.x;
-            float deltaY = playerScreenPos.y - obstacleScreenPos.y;
+            float deltaX = playerPos.x - obstaclePos.x;
+            float deltaY = playerPos.y - obstaclePos.y;
             
             float distanceSquared = (deltaX * deltaX) + (deltaY * deltaY);
 
@@ -79,7 +79,7 @@ public class ObstacleSpawner : MonoBehaviour
                 continue;
             }
    
-            if (obstacle.itemPosition.z < -20f)
+            if (obstacle.obstaclePosition.z < -20f)
             {
                 Destroy(obstacle.gameObject);
                 obstacles.RemoveAt(i);
@@ -92,12 +92,11 @@ public class ObstacleSpawner : MonoBehaviour
     private void SortLayerDepths()
     {
         List<Obstacle> sorted = new List<Obstacle>(obstacles);
-        sorted.Sort((a, b) => b.itemPosition.z.CompareTo(a.itemPosition.z));
+        sorted.Sort((a, b) => b.obstaclePosition.z.CompareTo(a.obstaclePosition.z));
 
         for (int i = 0; i < sorted.Count; i++)
         {
             sorted[i].transform.SetSiblingIndex(i);
         }
     }
-
 }
