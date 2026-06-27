@@ -6,7 +6,6 @@ public class Obstacle : MonoBehaviour
     public int laneIndex; 
     private SpriteRenderer spriteRenderer;
 
-    [Header("Horizon Tweak")]
     public float horizonYOffset = 6f; 
 
     private void Awake()
